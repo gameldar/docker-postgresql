@@ -1,7 +1,8 @@
 # Postgresql (http://www.postgresql.org/)
 
-FROM phusion/baseimage:0.9.13
+FROM phusion/baseimage:latest
 MAINTAINER Ryan Seto <ryanseto@yak.net>
+MAINTAINER gameldar@gmail.com
 
 # Ensure we create the cluster with UTF-8 locale
 RUN locale-gen en_US.UTF-8 && \
@@ -38,6 +39,10 @@ RUN touch /firstrun
 # Add daemon to be run by runit.
 RUN mkdir /etc/service/postgresql
 RUN ln -s /scripts/start.sh /etc/service/postgresql/run
+
+# Correct the Error: could not open temporary statistics file "/var/run/postgresql/9.3-main.pg_stat_tmp/global.tmp": No such file or directory
+RUN mkdir -p /var/run/postgresql/9.3-main.pg_stat_tmp
+RUN chown postgres.postgres /var/run/postgresql/9.3-main.pg_stat_tmp -R
 
 # Expose our data, log, and configuration directories.
 VOLUME ["/data", "/var/log/postgresql", "/etc/postgresql"]
